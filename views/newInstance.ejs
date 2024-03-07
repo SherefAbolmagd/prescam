@@ -1,0 +1,54 @@
+<%- include("partials/head.ejs") %>
+<body>
+    <div class="app-container app-theme-white body-tabs-shadow fixed-header fixed-sidebar">
+        <%- include("partials/header.ejs") %>
+        <div class="app-main">
+            <%- include("partials/sidebar.ejs") %>
+                <div class="app-main__outer">
+                    <div class="app-main__inner">
+                        <div class="app-page-title">
+                            <div class="page-title-wrapper">
+                                <div class="page-title-heading">
+                                    <div class="page-title-icon">
+                                        <i class="pe-7s-graph icon-gradient bg-ripe-malin">
+                                        </i>
+                                    </div>
+                                    <div>
+                                        <%= title %>
+                                            <div class="page-title-subheading">This dashboard was created as an example
+                                                of the
+                                                flexibility that Architect offers.
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="main-card mb-3 card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">New Instance</h5>
+                                        <form method="post" action="/wa/new">
+                                            <div class="position-relative form-group"><label for="instanceName"
+                                                    class="">Instance Name</label><input name="instanceName" id="instanceName"
+                                                    type="text" class="form-control">
+                                            </div>
+                                            <div class="position-relative form-group"><label for="instanceDescription"
+                                                    class="">Instance Description</label><textarea name="instanceDescription" id="instanceDescription"
+                                                    class="form-control"></textarea></div>
+                                            <button class="mt-1 btn btn-primary">Submit</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+    <div class="app-drawer-overlay d-none animated fadeIn"></div>
+    <script type="text/javascript" src="./assets/scripts/main.87c0748b313a1dda75f5.js"></script>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</body>
+
+</html>

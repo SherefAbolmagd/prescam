@@ -1,0 +1,870 @@
+<%- include("partials/head.ejs") %>
+
+    <body>
+        <style>
+            #aibot,
+            #langchain {
+                height: 30px;
+                position: relative;
+                box-sizing: content-box;
+                background: #313b45;
+                border: 3px solid #313b45;
+                border-radius: 30px;
+                aspect-ratio: 2.2;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                transition: .5s;
+            }
+
+            #aibot:before,
+            #langchain:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 30px;
+                aspect-ratio: 1;
+                border-radius: 30px;
+                background: rgb(239, 85, 85);
+                transition: .5s;
+
+            }
+
+            #aibot:checked:before,
+            #langchain:checked:before {
+                transition: .5s;
+                background: rgb(0, 255, 0);
+
+            }
+
+            #aibot:checked,
+            #langchain:checked {
+                transform: rotate(180deg);
+                background: rgb(221, 221, 221);
+                transition: .5s;
+            }
+        </style>
+        <div class="app-container app-theme-white body-tabs-shadow fixed-header fixed-sidebar">
+            <%- include("partials/header.ejs") %>
+                <div class="app-main">
+                    <%- include("partials/sidebar.ejs") %>
+                        <div class="app-main__outer">
+                            <div class="app-main__inner">
+                                <div class="tab-content">
+                                    <div class="tab-pane tabs-animation fade active show" id="tab-content-0"
+                                        role="tabpanel">
+                                        <div class="row">
+                                            <div class="col-md-6 col-lg-3">
+                                                <div
+                                                    class="widget-chart widget-chart2 text-left mb-3 card-btm-border card-shadow-primary border-primary card">
+                                                    <div class="widget-chat-wrapper-outer">
+                                                        <div class="widget-chart-content">
+                                                            <div class="widget-title opacity-5 text-uppercase">Credit
+                                                                Used</div>
+                                                            <div class="widget-numbers mt-2 fsize-4 mb-0 w-100">
+                                                                <div class="widget-chart-flex align-items-center">
+                                                                    <div>
+                                                                        <%= (((instance.inputTokens / 1000.00) * 0.003)
+                                                                            + ((instance.outputTokens / 1000.00) *
+                                                                            0.004)).toFixed(4) %>
+                                                                            <small class="opacity-5 pl-1">USD</small>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-3">
+                                                <div
+                                                    class="widget-chart widget-chart2 text-left mb-3 card-btm-border card-shadow-danger border-danger card">
+                                                    <div class="widget-chat-wrapper-outer">
+                                                        <div class="widget-chart-content">
+                                                            <div class="widget-title opacity-5 text-uppercase">Contacts
+                                                            </div>
+                                                            <div class="widget-numbers mt-2 fsize-4 mb-0 w-100">
+                                                                <div class="widget-chart-flex align-items-center">
+                                                                    <div>
+                                                                        <%= contacts.length %>
+                                                                            <small class="opacity-5 pl-1">Lead</small>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-3">
+                                                <div
+                                                    class="widget-chart widget-chart2 text-left mb-3 card-btm-border card-shadow-warning border-warning card">
+                                                    <div class="widget-chat-wrapper-outer">
+                                                        <div class="widget-chart-content">
+                                                            <div class="widget-title opacity-5 text-uppercase">Last
+                                                                Message</div>
+                                                            <div class="widget-numbers mt-2 fsize-4 mb-0 w-100">
+                                                                <div class="widget-chart-flex align-items-center">
+                                                                    <div>
+                                                                        <%= messages[messages.length - 1] ? new
+                                                                            Date(messages[messages.length -
+                                                                            1].messages[messages[messages.length -
+                                                                            1].messages.length -
+                                                                            1].timeStamp).toISOString().split('T')[0]
+                                                                            : "NAN" %>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-3">
+                                                <div
+                                                    class="widget-chart widget-chart2 text-left mb-3 card-btm-border card-shadow-success border-success card">
+                                                    <div class="widget-chat-wrapper-outer">
+                                                        <div class="widget-chart-content">
+                                                            <div class="widget-title opacity-5 text-uppercase">Total
+                                                                Messages</div>
+                                                            <div class="widget-numbers mt-2 fsize-4 mb-0 w-100">
+                                                                <div class="widget-chart-flex align-items-center">
+                                                                    <div>
+                                                                        <%=instance.count%>
+                                                                            <small
+                                                                                class="opacity-5 pl-1">Message</small>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="main-card mb-3 card">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title" id="scanHeader">Scan to start your bot
+                                                            agent
+                                                        </h5>
+                                                        <img alt="qrcode" id="qr"
+                                                            src="https://images.squarespace-cdn.com/content/v1/5c4a3053b98a78bea1e90622/1575486969836-DQKSYYW7F60712AGPFKV/loader.gif"
+                                                            width="100%">
+                                                        <div class="row" id="connected" style="display: none;">
+                                                            <div class="col-md-3">
+                                                                <img src="/assets/images/connected.png" width="100%">
+                                                            </div>
+                                                            <div class="col-md-9">
+                                                                <h4>
+                                                                    Connected
+                                                                </h4>
+                                                                <p>
+                                                                    Your phone doesn't need to stay online but your
+                                                                    linked
+                                                                    devices
+                                                                    will be logged out if you don’t use your phone for
+                                                                    over
+                                                                    14
+                                                                    days.
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="main-card mb-3 card">
+                                                    <div class="card-body">
+                                                        <!-- <h5 class="card-title">Toggle AI Bot</h5> -->
+                                                        <div class="row">
+                                                            <div class="col-md-3">
+                                                                <img width="100%"
+                                                                    src="https://cdn-icons-png.flaticon.com/512/1698/1698535.png"
+                                                                    alt="bot">
+                                                            </div>
+                                                            <div class="col-md-9">
+                                                                <h4 class="mt-2 mb-3">
+                                                                    Enable AI Bot
+                                                                </h4>
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <% if(instance.aibot){ %>
+                                                                            <input name="check" id="aibot" checked
+                                                                                type="checkbox">
+                                                                            <% }else{ %>
+                                                                                <input name="check" id="aibot"
+                                                                                    type="checkbox">
+                                                                                <% } %>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mt-3">
+                                                                    <div class="col-md-12">
+                                                                        <% if(instance.aibot){ %>
+                                                                            <p>
+                                                                                Now AI Bot will start to answer all
+                                                                                incoming
+                                                                                messages.
+                                                                            </p>
+                                                                            <% }else{ %>
+                                                                                <p>
+                                                                                    AI Bot stopped repling messages.
+                                                                                </p>
+                                                                                <% } %>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="main-card mb-3 card">
+                                                    <div class="card-header">
+                                                        Contacts
+                                                    </div>
+                                                    <div class="table-responsive">
+                                                        <table
+                                                            class="align-middle mb-0 table table-borderless table-striped table-hover">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="text-center">Mobile</th>
+                                                                    <th>Name</th>
+                                                                    <th>Created at</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <% for(var i=0; i< contacts.length; i++) {%>
+                                                                    <tr>
+                                                                        <td class="text-center text-muted">
+                                                                            <%= contacts[i].mobile %>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="widget-content p-0">
+                                                                                <div class="widget-content-wrapper">
+                                                                                    <div
+                                                                                        class="widget-content-left mr-3">
+                                                                                        <div
+                                                                                            class="widget-content-left">
+                                                                                            <img width="80"
+                                                                                                class="rounded-circle"
+                                                                                                src="data:image/jpeg;base64,<%= contacts[i].image %>"
+                                                                                                alt="">
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div
+                                                                                        class="widget-content-left flex2">
+                                                                                        <div
+                                                                                            class="widget-subheading opacity-7">
+                                                                                            <%= contacts[i].name%>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <%= Date(contacts[i].created_at) %>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <% } %>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <% if(instance.payment==false) { %>
+                                                    <div class="main-card mb-3 card">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title">
+                                                                Trial Mode (100 message limit)
+                                                            </h5>
+                                                            <div class="row">
+                                                                <div class="card-body">
+                                                                    <div class="text-center">
+                                                                        <%= instance.count %> message
+                                                                    </div>
+                                                                    <div class="progress">
+                                                                        <div class="progress-bar" role="progressbar"
+                                                                            aria-valuenow="0" aria-valuemin="0"
+                                                                            aria-valuemax="100"
+                                                                            style="width: <%= instance.count %>%;">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <% } %>
+                                                        <!-- <div class="main-card mb-3 card">
+                                                            <div class="card-body">
+                                                                <h5 class="card-title">
+                                                                    Most Popular Templates
+                                                                </h5>
+                                                                <div class="row">
+                                                                    <div class="col">
+                                                                        <div class="main-card mb-3 card btn btn-info">
+                                                                            <div class="card-body">
+                                                                                <h5 class="text-center">
+                                                                                    Event Organizer Template
+                                                                                </h5>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col">
+                                                                        <div class="main-card mb-3 card btn btn-info">
+                                                                            <div class="card-body">
+                                                                                <h5 class="text-center">
+                                                                                    Venue Renting Template
+                                                                                </h5>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col">
+                                                                        <div class="main-card mb-3 card btn btn-info">
+                                                                            <div class="card-body">
+                                                                                <h5 class="text-center">
+                                                                                    Website Designer
+                                                                                </h5>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col">
+                                                                        <div class="main-card mb-3 card btn btn-info">
+                                                                            <div class="card-body">
+                                                                                <h5 class="text-center">
+                                                                                    SkinCare Shop Template
+                                                                                </h5>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div> -->
+                                                        <% if(instance.aibot) { %>
+                                                            <div class="main-card mb-3 card">
+                                                                <div class="card-body">
+                                                                    <!-- <h5 class="card-title">Toggle AI Bot</h5> -->
+                                                                    <div class="row">
+                                                                        <div class="col-md-3">
+                                                                            <img width="100%"
+                                                                                src="/assets/images/training.png"
+                                                                                alt="bot">
+                                                                        </div>
+                                                                        <div class="col-md-9">
+                                                                            <h4 class="mt-2 mb-3">
+                                                                                Enable Bot Training
+                                                                            </h4>
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <% if(instance.langchain){ %>
+                                                                                        <input name="check"
+                                                                                            id="langchain" checked
+                                                                                            type="checkbox">
+                                                                                        <% }else{ %>
+                                                                                            <input name="check"
+                                                                                                id="langchain"
+                                                                                                type="checkbox">
+                                                                                            <% } %>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row mt-3">
+                                                                                <div class="col-md-12">
+                                                                                    <% if(instance.langchain){ %>
+                                                                                        <p>
+                                                                                            By disabling this the Bot
+                                                                                            will be replying based on
+                                                                                            the
+                                                                                            data from the describtion
+                                                                                            box
+                                                                                            content and ignoring the
+                                                                                            files
+                                                                                            uploaded
+                                                                                        </p>
+                                                                                        <% }else{ %>
+                                                                                            <p>
+                                                                                                By enabling this the Bot
+                                                                                                will be replying based
+                                                                                                on the
+                                                                                                data from the files
+                                                                                                uploaded and ignoring
+                                                                                                the describtion box
+                                                                                                content
+                                                                                            </p>
+                                                                                            <% } %>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <%}%>
+                                                                <!-- upload File -->
+                                                                <style>
+                                                                    /*----------multiple-file-upload-----------*/
+                                                                    .input-group.file-caption-main {
+                                                                        display: none;
+                                                                    }
+
+                                                                    .close.fileinput-remove {
+                                                                        display: none;
+                                                                    }
+
+                                                                    .file-drop-zone {
+                                                                        margin: 0px;
+                                                                        border: 1px solid #fff;
+                                                                        background-color: #fff;
+                                                                        padding: 0px;
+                                                                        display: contents;
+                                                                    }
+
+                                                                    .file-drop-zone.clickable:hover {
+                                                                        border-color: #fff;
+                                                                    }
+
+                                                                    .file-drop-zone .file-preview-thumbnails {
+                                                                        display: inline;
+                                                                    }
+
+                                                                    .file-drop-zone-title {
+                                                                        padding: 15px;
+                                                                        height: 120px;
+                                                                        width: 120px;
+                                                                        font-size: 12px;
+                                                                    }
+
+                                                                    .file-input-ajax-new {
+                                                                        display: inline-block;
+                                                                    }
+
+                                                                    .file-input.theme-fas {
+                                                                        display: inline-block;
+                                                                        width: 100%;
+                                                                    }
+
+                                                                    .file-preview {
+                                                                        padding: 0px;
+                                                                        border: none;
+                                                                        display: inline;
+
+                                                                    }
+
+                                                                    .file-drop-zone-title {
+                                                                        display: none;
+                                                                    }
+
+                                                                    .file-footer-caption {
+                                                                        display: none !important;
+                                                                    }
+
+                                                                    .kv-file-upload {
+                                                                        display: none;
+                                                                    }
+
+                                                                    .file-upload-indicator {
+                                                                        display: none;
+                                                                    }
+
+                                                                    .file-drag-handle.drag-handle-init.text-info {
+                                                                        display: none;
+                                                                    }
+
+                                                                    .krajee-default.file-preview-frame .kv-file-content {
+                                                                        width: 90px;
+                                                                        height: 90px;
+                                                                        display: flex;
+                                                                        text-align: center;
+                                                                        align-items: center;
+                                                                    }
+
+                                                                    .krajee-default.file-preview-frame {
+                                                                        background-color: #fff;
+                                                                        margin: 3px;
+                                                                        border-radius: 15px;
+                                                                        overflow: hidden;
+                                                                    }
+
+                                                                    .krajee-default.file-preview-frame:not(.file-preview-error):hover {
+                                                                        box-shadow: none;
+                                                                        border-color: #ed3237;
+                                                                    }
+
+                                                                    .krajee-default.file-preview-frame:not(.file-preview-error):hover .file-preview-image {
+                                                                        transform: scale(1.1);
+                                                                    }
+
+                                                                    .krajee-default.file-preview-frame {
+                                                                        box-shadow: none;
+                                                                        border-color: #fff;
+                                                                        max-width: 150px;
+                                                                        margin: 5px;
+                                                                        padding: 0px;
+                                                                        transition: 0.5s;
+                                                                    }
+
+                                                                    .file-thumbnail-footer,
+                                                                    .file-actions {
+                                                                        width: 20px;
+                                                                        height: 20px !important;
+                                                                        position: absolute !important;
+                                                                        top: 3px;
+                                                                        right: 3px;
+                                                                    }
+
+                                                                    .kv-file-remove:focus,
+                                                                    .kv-file-remove:active {
+                                                                        outline: none !important;
+                                                                        box-shadow: none !important;
+                                                                    }
+
+                                                                    .kv-file-remove {
+                                                                        border-radius: 50%;
+                                                                        z-index: 1;
+                                                                        right: 0;
+                                                                        position: absolute;
+                                                                        top: 0;
+                                                                        text-align: center;
+                                                                        color: #fff;
+                                                                        background-color: #ed3237;
+                                                                        border: 1px solid #ed3237;
+                                                                        padding: 2px 6px;
+                                                                        font-size: 11px;
+                                                                        transition: 0.5s;
+                                                                    }
+
+                                                                    .kv-file-remove:hover {
+                                                                        border-color: #fdeff0;
+                                                                        background-color: #fdeff0;
+                                                                        color: #ed1924;
+                                                                    }
+
+                                                                    .kv-preview-data.file-preview-video {
+                                                                        width: 100% !important;
+                                                                        height: 100% !important;
+                                                                    }
+
+                                                                    .btn-outline-secondary.focus,
+                                                                    .btn-outline-secondary:focus {
+                                                                        box-shadow: none;
+                                                                    }
+
+                                                                    .btn-toggleheader,
+                                                                    .btn-fullscreen,
+                                                                    .btn-borderless {
+                                                                        display: none;
+                                                                    }
+
+                                                                    .btn-kv.btn-close {
+                                                                        color: #fff;
+                                                                        border: none;
+                                                                        background-color: #ed3237;
+                                                                        font-size: 11px;
+                                                                        width: 18px;
+                                                                        height: 18px;
+                                                                        text-align: center;
+                                                                        padding: 0px;
+                                                                    }
+
+                                                                    .btn-outline-secondary:not(:disabled):not(.disabled).active:focus,
+                                                                    .btn-outline-secondary:not(:disabled):not(.disabled):active:focus,
+                                                                    .show>.btn-outline-secondary.dropdown-toggle:focus {
+                                                                        background-color: rgba(255, 255, 255, 0.8);
+                                                                        color: #000;
+                                                                        box-shadow: none;
+                                                                        color: #ed3237;
+                                                                    }
+
+                                                                    .kv-file-content .file-preview-image {
+                                                                        width: 90px !important;
+                                                                        height: 90px !important;
+                                                                        max-width: 90px !important;
+                                                                        max-height: 90px !important;
+                                                                        transition: 0.5s;
+                                                                    }
+
+                                                                    .btn-danger.btn-file {
+                                                                        padding: 0px;
+                                                                        height: 95px;
+                                                                        width: 95px;
+                                                                        display: inline-block;
+                                                                        margin: 5px;
+                                                                        border-color: #fdeff0;
+                                                                        background-color: #fdeff0;
+                                                                        color: #ed1924;
+                                                                        border-radius: 15px;
+                                                                        padding-top: 30px;
+                                                                        transition: 0.5s;
+                                                                    }
+
+                                                                    .btn-danger.btn-file:active,
+                                                                    .btn-danger.btn-file:hover {
+                                                                        background-color: #fde3e5;
+                                                                        color: #ed1924;
+                                                                        border-color: #fdeff0;
+                                                                        box-shadow: none;
+                                                                    }
+
+                                                                    .btn-danger.btn-file i {
+                                                                        font-size: 30px;
+                                                                    }
+
+
+                                                                    @media (max-width: 350px) {
+                                                                        .krajee-default.file-preview-frame:not([data-template=audio]) .kv-file-content {
+                                                                            width: 90px;
+                                                                        }
+                                                                    }
+                                                                </style>
+                                                                <div class="main-card mb-3 card">
+                                                                    <form action="/wa/upload/<%= instanceId %>"
+                                                                        method="post" enctype="multipart/form-data">
+                                                                        <div class="card-body">
+                                                                            <h5 class="card-title">
+                                                                                Upload Document For Training
+                                                                            </h5>
+                                                                            <div class="row">
+                                                                                <section class="bg-diffrent">
+                                                                                    <div class="container">
+                                                                                        <div class="row">
+                                                                                            <div class="col-md-12">
+                                                                                                <div
+                                                                                                    class="verify-sub-box">
+                                                                                                    <div
+                                                                                                        class="file-loading">
+                                                                                                        <input required
+                                                                                                            id="multiplefileupload"
+                                                                                                            type="file"
+                                                                                                            accept=".pdf"
+                                                                                                            name="fileupload"
+                                                                                                            multiple>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </section>
+                                                                            </div>
+                                                                        </div>
+                                                                        <button type="submit"
+                                                                            class="mt-1 btn btn-primary btn-lg w-100">Upload
+                                                                            Files</button>
+                                                                    </form>
+                                                                </div>
+                                                                <script>
+                                                                    // ----------multiplefile-upload---------
+                                                                    $("#multiplefileupload").fileinput({
+                                                                        'theme': 'fa',
+                                                                        'uploadUrl': '#',
+                                                                        showRemove: false,
+                                                                        showUpload: false,
+                                                                        showZoom: false,
+                                                                        showCaption: false,
+                                                                        browseClass: "btn btn-danger",
+                                                                        browseLabel: "",
+                                                                        browseIcon: "<i class='fa fa-plus'></i>",
+                                                                        overwriteInitial: false,
+                                                                        initialPreviewAsData: true,
+                                                                        fileActionSettings: {
+                                                                            showUpload: false,
+                                                                            showZoom: false,
+                                                                            removeIcon: "<i class='fa fa-times'></i>",
+                                                                        }
+                                                                    });
+                                                                </script>
+                                                                <div class="main-card mb-3 card">
+                                                                    <div class="card-header">
+                                                                        Files Uploaded
+                                                                    </div>
+                                                                    <div class="table-responsive">
+                                                                        <table
+                                                                            class="align-middle mb-0 table table-borderless table-striped table-hover">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th>Name</th>
+                                                                                    <th>Actions</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <% for(var i=0; i< uploadedFiles.length;
+                                                                                    i++) {%>
+                                                                                    <tr>
+                                                                                        <td>
+                                                                                            <div
+                                                                                                class="widget-content p-0">
+                                                                                                <div
+                                                                                                    class="widget-content-wrapper">
+                                                                                                    <div
+                                                                                                        class="widget-content-left flex2">
+                                                                                                        <div
+                                                                                                            class="widget-subheading opacity-7">
+                                                                                                            <%=
+                                                                                                                uploadedFiles[i]%>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <a class="mt-1 btn btn-info btn-sm"
+                                                                                                href="/wa/documents/review/<%= instanceId %>/<%= uploadedFiles[i] %>">
+                                                                                                Preview
+                                                                                            </a>
+                                                                                            <a class="mt-1 btn btn-danger btn-sm"
+                                                                                                href="/wa/documents/remove/<%= instanceId %>/<%= uploadedFiles[i] %>">
+                                                                                                Rmove
+                                                                                            </a>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    <% } %>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                    <button onclick="train()" id="train"
+                                                                        class="mt-1 btn btn-primary btn-lg text-white">Train
+                                                                        Files</button>
+                                                                </div>
+                                                                <!-- upload file end -->
+                                                                <div class="main-card mb-3 card">
+                                                                    <div class="card-body">
+                                                                        <h5 class="card-title">Simply describe what you
+                                                                            want the
+                                                                            bot to
+                                                                            do
+                                                                        </h5>
+                                                                        <div class="position-relative form-group">
+                                                                            <textarea name="text" id="customBot"
+                                                                                class="form-control"
+                                                                                rows="22"><%= instance.botDescription %></textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                    <button class="mt-1 btn btn-primary btn-lg"
+                                                                        id="submitBot" disabled>Submit</button>
+                                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+        </div>
+        <script type="text/javascript" src="/assets/scripts/main.87c0748b313a1dda75f5.js"></script>
+        <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+        <script>
+            if ("<%= status %>" == "connected") {
+                document.getElementById("connected").style.display = "";
+                document.getElementById("submitBot").disabled = false;
+                document.getElementById("scanHeader").remove();
+                document.getElementById("qr").src = "/assets/images/connected.png"
+                document.getElementById("qr").style.display = "none";
+            }
+            var socket = io();
+            socket.on('qrcode ' + <%= instanceId %>, function (data) {
+                document.getElementById("connected").style.display = "none";
+                document.getElementById("qr").src = data
+            });
+            socket.on('connected ' + <%= instanceId %>, function (data) {
+                document.getElementById("qr").style.display = "none";
+                document.getElementById("connected").style.display = "";
+                document.getElementById("submitBot").disabled = false;
+                document.getElementById("scanHeader").remove();
+                document.getElementById("qr").src = "/assets/images/connected.png"
+            });
+            socket.on('loading ' + <%= instanceId %>, function (data) {
+                document.getElementById("connected").style.display = "none";
+                document.getElementById("qr").src = "/assets/images/loading.jpg"
+            });
+            socket.on('no scan ' + <%= instanceId %>, function (data) {
+                console.log(data);
+                document.getElementById("connected").style.display = "none";
+                document.getElementById("qr").src = "/assets/images/rescan.png"
+                document.getElementById("qr").onclick = () => location.reload();
+            });
+            document.getElementById("submitBot").onclick = function () {
+                if (document.getElementById("customBot").value.length > 0) {
+                    fetch('/wa/customBot', {
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            text: document.getElementById("customBot").value,
+                            instanceId: <%= instanceId %>
+                    })
+                }).then(response => response.text()).then(data => {
+                    console.log(data);
+                })
+            }
+        };
+            document.getElementById("aibot").onclick = function () {
+                fetch('/wa/aibot', {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        aibot: document.getElementById("aibot").checked,
+                        instanceId: <%= instanceId %>
+                })
+            }).then(response => response.text()).then(data => {
+                console.log(data);
+                location.reload();
+            })
+        };
+
+            document.getElementById("langchain").onclick = function () {
+                fetch('/wa/langchain', {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        langchain: document.getElementById("langchain").checked,
+                        instanceId: <%= instanceId %>
+                })
+            }).then(response => response.text()).then(data => {
+                console.log(data);
+                location.reload();
+            })
+        };
+
+            var templates = {
+                cosmetic: `
+                Welcome Message:
+                "Welcome to our Cosmetic Shop! I'm here to assist you with any questions or recommendations you may need. How can I help you today?"
+
+                Category Inquiry:
+                "To help you find the perfect cosmetic products, could you please let me know which category you're interested in? We offer a wide range, including skincare, makeup, haircare, and fragrances."
+
+                Product Recommendation:
+                "Based on your preferences, I recommend trying our [product name]. It's a popular choice among customers who are looking for [specific benefit or feature]. Would you like to learn more about it?"
+
+                Ingredient Inquiry:
+                "If you're concerned about specific ingredients or have any allergies, please let me know. I'll ensure that the products I recommend are suitable for your needs."
+
+                Special Offers and Promotions:
+                "We have some exciting promotions available today! Would you like to hear about our current offers, such as discounts, gift sets, or limited-time deals?"
+
+                Shade Matching Assistance:
+                "If you're looking for makeup products and need help with shade matching, I can assist you with that. Just let me know your skin tone, and I'll recommend suitable options."
+
+                Product Availability:
+                "I can check the availability of any specific product you're interested in. Please provide me with the name or SKU, and I'll verify its availability in our store."
+
+                Order Assistance:
+                "If you need assistance with an existing order, such as tracking information or any other inquiries, feel free to ask. I'm here to ensure a smooth shopping experience for you."
+
+                Return and Exchange Policy:
+                "We have a customer-friendly return and exchange policy in place. If you're not satisfied with a product or need to initiate a return, please let me know, and I'll guide you through the process."
+
+                Closing Message:
+                "Thank you for visiting our Cosmetic Shop! If you have any more questions in the future, don't hesitate to reach out. Have a wonderful day and enjoy your beauty shopping experience!"
+            `,
+
+            }
+
+            function train() {
+                document.getElementById("train").disabled = true;
+                document.getElementById("train").innerHTML = '<i class="fa fa-spinner fa-spin" style="font-size:24px"></i>';
+                fetch('/langchain/ingest/<%= instanceId %>').then(response => response.text()).then(data => {
+                    document.getElementById("train").disabled = false;
+                    document.getElementById("train").innerHTML = 'Training Done';
+                })
+            }
+        </script>
+    </body>
+
+    </html>

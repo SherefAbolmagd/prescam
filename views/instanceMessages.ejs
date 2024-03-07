@@ -1,0 +1,195 @@
+<%- include("partials/head.ejs") %>
+    <script>
+        async function fetchConv(mobile, image, name, index) {
+            var contact = document.getElementsByClassName("contact");
+            for (let index = 0; index < contact.length; index++) {
+                const element = contact[index];
+                element.classList.remove("active")
+            }
+            contact[index].classList.add("active");
+            document.getElementById("chatBox").innerHTML = `
+                <div class="loader-wrapper d-flex justify-content-center align-items-center h-80 w-100">
+                    <div class="loader">
+                        <div class="line-scale">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                    </div>
+                </div>
+            `
+            const res = await fetch('/wa/conversation/<%= instanceId %>/' + mobile);
+            const messages = await res.json();
+            let lastChat = new Date(messages.chat[messages.chat.length - 1].timestamp * 1000);
+            document.getElementById("convHead").innerHTML = `
+            ${name}
+            <div class="opacity-7">Last Message at: ${lastChat.getHours() + ":" + lastChat.getMinutes() + " | " + lastChat.toDateString()}
+            <span class="opacity-8"></span></div>
+            `
+            document.getElementById("convImage").innerHTML = `
+            <img width="82" src="data:image/jpeg;base64,${image}" alt="">
+            `;
+            document.getElementById("chatBox").innerHTML = '';
+            for (let index = 0; index < messages.chat.length; index++) {
+                const msg = messages.chat[index];
+                let time = new Date(msg.timestamp * 1000);
+                if (msg.fromMe) {
+                    document.getElementById("chatBox").innerHTML +=
+                        `<div class="chat-box-wrapper float-right">
+                            <div class="chat-box-wrapper chat-box-wrapper-right">
+                                <div>
+                                    <div class="chat-box">${msg.body}
+                                    </div>
+                                    <small class="opacity-6">
+                                        <i class="fa fa-calendar-alt mr-1"></i>
+                                        ${time.getHours() + ":" + time.getMinutes() + " | " + time.toDateString()}
+                                    </small>
+                                </div>
+                                <div>
+                                    <div class="avatar-icon-wrapper ml-1">
+                                        <div
+                                            class="badge badge-bottom btn-shine badge-success badge-dot badge-dot-lg">
+                                        </div>
+                                        <div class="avatar-icon avatar-icon-lg rounded"><img
+                                                src="<%= instance.image %>" alt="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+                } else {
+                    document.getElementById("chatBox").innerHTML +=
+                        `
+                        <div class="chat-box-wrapper">
+                            <div>
+                                <div class="avatar-icon-wrapper mr-1">
+                                    <div
+                                        class="badge badge-bottom btn-shine badge-success badge-dot badge-dot-lg">
+                                    </div>
+                                    <div class="avatar-icon avatar-icon-lg rounded">
+                                        <img src="data:image/jpeg;base64,${image}" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="chat-box">${msg.body}</div>
+                                <small class="opacity-6">
+                                    <i class="fa fa-calendar-alt mr-1"></i>
+                                    ${time.getHours() + ":" + time.getMinutes() + " | " + time.toDateString()}
+                                </small>
+                            </div>
+                        </div>
+                        `;
+                }
+            }
+            var objDiv = document.getElementById("chatBox");
+            objDiv.scrollTop = objDiv.scrollHeight;
+        }
+    </script>
+
+    <body>
+        <div class="app-container app-theme-white body-tabs-shadow fixed-header fixed-sidebar">
+            <%- include("partials/header.ejs") %>
+                <div class="app-main">
+                    <%- include("partials/sidebar.ejs") %>
+                        <div class="app-main__outer">
+                            <div class="app-main__inner p-0">
+                                <div class="app-inner-layout chat-layout">
+                                    <div class="app-inner-layout__wrapper">
+                                        <div class="app-inner-layout__content card">
+                                            <div class="table-responsive">
+                                                <div class="app-inner-layout__top-pane"
+                                                    style="border-bottom: #e9ecef solid 1px;">
+                                                    <div class="pane-left">
+                                                        <div class="mobile-app-menu-btn">
+                                                            <button type="button" class="hamburger hamburger--elastic">
+                                                                <span class="hamburger-box">
+                                                                    <span class="hamburger-inner"></span>
+                                                                </span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="avatar-icon-wrapper mr-2">
+                                                            <div class="avatar-icon avatar-icon-xl rounded"
+                                                                id="convImage">
+                                                            </div>
+                                                        </div>
+                                                        <h4 class="mb-0 text-nowrap" id="convHead">
+                                                        </h4>
+                                                    </div>
+                                                </div>
+                                                <div class="chat-wrapper overflow-auto h-100" id="chatBox"
+                                                    style="flex-direction: column-reverse;">
+                                                </div>
+                                                <div class="app-inner-layout__bottom-pane d-block text-center">
+                                                    <div class="mb-0 position-relative row form-group">
+                                                        <div class="col-sm-12">
+                                                            <input placeholder="Write here and hit enter to send..."
+                                                                type="text" class="form-control-lg form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="app-inner-layout__sidebar card">
+                                            <div class="app-inner-layout__sidebar-header">
+                                                <ul class="nav flex-column">
+                                                    <li class="pt-4 pl-3 pr-3 pb-3 nav-item">
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <div class="input-group-text">
+                                                                    <i class="fa fa-search"></i>
+                                                                </div>
+                                                            </div>
+                                                            <input placeholder="Search..." type="text"
+                                                                class="form-control">
+                                                        </div>
+                                                    </li>
+                                                    <li class="nav-item-header nav-item">Friends Online</li>
+                                                </ul>
+                                            </div>
+                                            <ul class="nav flex-column">
+                                                <% for(var i=0; i< contacts.length; i++) {%>
+                                                    <li class="nav-item">
+                                                        <button type="button" tabindex="0" class="contact dropdown-item"
+                                                            onclick="fetchConv('<%= contacts[i].mobile %>','<%= contacts[i].image %>','<%= contacts[i].name %>', '<%= i %>')">
+                                                            <div class="widget-content p-0">
+                                                                <div class="widget-content-wrapper">
+                                                                    <div class="widget-content-left mr-3">
+                                                                        <div class="avatar-icon-wrapper">
+                                                                            <div
+                                                                                class="badge badge-bottom badge-success badge-dot badge-dot-lg">
+                                                                            </div>
+                                                                            <div class="avatar-icon"
+                                                                                style="width: 70px; height: 70px;"><img
+                                                                                    src="data:image/jpeg;base64,<%= contacts[i].image %>">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="widget-content-left">
+                                                                        <div class="widget-heading">
+                                                                            <%= contacts[i].name %>
+                                                                        </div>
+                                                                        <div class="widget-subheading">Tap to see
+                                                                            conversation</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </button>
+                                                    </li>
+                                                    <% } %>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+        </div>
+        <script type="text/javascript" src="/assets/scripts/main.87c0748b313a1dda75f5.js"></script>
+        <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    </body>
+
+    </html>

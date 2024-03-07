@@ -1,0 +1,138 @@
+<%- include("partials/head.ejs") %>
+
+    <body>
+        <div class="app-container app-theme-white body-tabs-shadow fixed-header fixed-sidebar">
+            <%- include("partials/header.ejs") %>
+                <div class="app-main">
+                    <%- include("partials/sidebar.ejs") %>
+                        <div class="app-main__outer">
+                            <div class="app-main__inner">
+                                <div class="app-page-title">
+                                    <div class="page-title-wrapper">
+                                        <div class="page-title-heading">
+                                            <div class="page-title-icon">
+                                                <i class="pe-7s-graph icon-gradient bg-ripe-malin">
+                                                </i>
+                                            </div>
+                                            <div>
+                                                <%= title %>
+                                                    <div class="page-title-subheading">List of all the instances created
+                                                        by this
+                                                        account, each instance represent a whatsapp line
+                                                    </div>
+                                            </div>
+                                        </div>
+                                        <div class="page-title-actions">
+                                            <a href="/new" class="btn-icon btn btn-primary text-light"><i
+                                                    class="pe-7s-plus btn-icon-wrapper">
+                                                </i>New Instance</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="main-card mb-3 card">
+                                            <div class="card-header">Active Instances
+                                            </div>
+                                            <div class="table-responsive">
+                                                <table
+                                                    class="align-middle mb-0 table table-borderless table-striped table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="text-center">ID</th>
+                                                            <th>Instance Name</th>
+                                                            <th class="text-center">Whatsapp Name</th>
+                                                            <th class="text-center">Whatsapp Number</th>
+                                                            <th class="text-center">Description</th>
+                                                            <th class="text-center">AI Bot</th>
+                                                            <th class="text-center">Status</th>
+                                                            <th class="text-center">Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <% for(var i=0; i< instances.length; i++) {%>
+                                                            <tr>
+                                                                <td class="text-center text-muted">
+                                                                    <%= instances[i].instanceId %>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="widget-content p-0">
+                                                                        <div class="widget-content-wrapper">
+                                                                            <div class="widget-content-left mr-3">
+                                                                                <div class="widget-content-left">
+                                                                                    <img width="80"
+                                                                                        class="rounded-circle"
+                                                                                        src="<%= instances[i].image %>"
+                                                                                        alt="">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="widget-content-left flex2">
+                                                                                <div
+                                                                                    class="widget-subheading opacity-7">
+                                                                                    <%= instances[i].instanceName%>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <%= instances[i].waName %>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <%= instances[i].waNumber %>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <%= instances[i].instanceDescription %>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <% if(instances[i].aibot) { %>
+                                                                        <div class="badge badge-success">
+                                                                            Active
+                                                                        </div>
+                                                                        <% } else { %>
+                                                                            <div class="badge badge-danger">
+                                                                                Disabled
+                                                                            </div>
+                                                                            <% } %>
+                                                                </td>
+                                                                <td class="text-center" style="width: 150px;">
+                                                                    <% if(instances[i].connected) { %>
+                                                                        <div class="badge badge-success">
+                                                                            Connected
+                                                                        </div>
+                                                                        <% } else { %>
+                                                                            <div class="badge badge-danger">
+                                                                                Disconnected
+                                                                            </div>
+                                                                            <% } %>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <a href="/wa/instance/<%= instances[i].instanceId %>"
+                                                                        type="button"
+                                                                        class="btn btn-primary btn-sm text-light m-2">Details</a>
+                                                                    <a href="/wa/instance/<%= instances[i].instanceId %>/messages"
+                                                                        type="button"
+                                                                        class="btn btn-success btn-sm text-light m-2">Messages</a>
+                                                                    <% if(instances[i].payment == false) { %>
+                                                                        <a href="/payment/new?instanceId=<%= instances[i].instanceId %>"
+                                                                            type="button"
+                                                                            class="btn btn-danger btn-sm text-light m-2">Pay</a>
+                                                                        <% } %>
+                                                                </td>
+                                                            </tr>
+                                                            <% } %>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+        </div>
+        <script type="text/javascript" src="./assets/scripts/main.87c0748b313a1dda75f5.js"></script>
+        <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    </body>
+
+    </html>

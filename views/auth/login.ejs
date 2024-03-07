@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Language" content="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>
+        Login | EasyFastAI
+    </title>
+    <link rel="shortcut icon" href="/assets/images/logo/icon.png" type="image/x-icon">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+    <meta name="description" content="Turn your whatsapp to chatGPT">
+
+    <!-- Disable tap highlight on IE -->
+    <meta name="msapplication-tap-highlight" content="no">
+
+    <link href="/main.87c0748b313a1dda75f5.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container app-theme-white body-tabs-shadow">
+        <div class="app-container">
+            <div class="h-100">
+                <div class="h-100 no-gutters row">
+                    <div class="d-none d-lg-block col-lg-4">
+                        <div class="slider-light">
+                            <div class="slick-slider">
+                                <div>
+                                    <div class="position-relative h-100 d-flex justify-content-center align-items-center bg-premium-dark"
+                                        tabindex="-1">
+                                        <div class="slide-img-bg"
+                                            style="background-image: url('/assets/images/sidebar/324764-P9H3DH-500.jpg'); background-position: center;">
+                                        </div>
+                                        <div class="slider-content">
+                                            <h3>Handle Enormous Load</h3>
+                                            <p>Handle customer enquiries from multiple WhatsApp lines simultaneously,
+                                                ensuring separation of departments e.g. Sales vs Service</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="position-relative h-100 d-flex justify-content-center align-items-center bg-premium-dark    "
+                                        tabindex="-1">
+                                        <div class="slide-img-bg"
+                                            style="background-image: url('/assets/images/sidebar/162.jpg'); background-position: center;">
+                                        </div>
+                                        <div class="slider-content">
+                                            <h3>Perfect Responses</h3>
+                                            <p>It allows you to set a personalized description, and based on that
+                                                description, the AI Assistant generates intelligent and contextually
+                                                appropriate responses to incoming messages.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="position-relative h-100 d-flex justify-content-center align-items-center bg-premium-dark"
+                                        tabindex="-1">
+                                        <div class="slide-img-bg"
+                                            style="background-image: url('/assets/images/sidebar/318334-P94U1Q-536.jpg'); background-position: center;">
+                                        </div>
+                                        <div class="slider-content">
+                                            <h3>Support Multi Language</h3>
+                                            <p>Serve customers globally by leveraging AI ability to provide multilingual
+                                                responses, breaking down language barriers.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="h-100 d-flex bg-white justify-content-center align-items-center col-md-12 col-lg-8">
+                        <div class="mx-auto app-login-box col-sm-12 col-md-10 col-lg-9">
+                            <div class="mt-3">
+                                <img width="300" src="/assets/images/logo/logo-no-background.png" alt="logo">
+                            </div>
+                            <h4 class="mb-0">
+                                <span>Please sign in to your account.</span>
+                            </h4>
+                            <h6 class="mt-3">No account? <a href="/signup" class="text-primary">Sign up
+                                    now</a></h6>
+                            <% if (typeof errors != 'undefined') { %>
+                                <div class="alert alert-danger fade show" role="alert">
+                                    <%= errors[0].msg %>
+                                </div>
+                                <% } %>
+                                    <% if (typeof success != 'undefined') { %>
+                                        <div class="alert alert-success fade show" role="alert">
+                                            <%= success %>
+                                        </div>
+                                        <% } %>
+                                            <div class="divider row"></div>
+                                            <div>
+                                                <form class="" method="post" action="/auth/login">
+                                                    <div class="form-row">
+                                                        <div class="col-md-6">
+                                                            <div class="position-relative form-group"><label
+                                                                    for="exampleEmail" class="">Email</label><input
+                                                                    name="email" id="exampleEmail"
+                                                                    placeholder="Email here..." type="email"
+                                                                    class="form-control"></div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="position-relative form-group"><label
+                                                                    for="examplePassword"
+                                                                    class="">Password</label><input name="password"
+                                                                    id="examplePassword" placeholder="Password here..."
+                                                                    type="password" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="position-relative form-check"><input name="check"
+                                                            id="exampleCheck" type="checkbox"
+                                                            class="form-check-input"><label for="exampleCheck"
+                                                            class="form-check-label">Keep me logged in</label></div>
+                                                    <div class="divider row"></div>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="ml-auto">
+                                                            <!-- <a href="javascript:void(0);"
+                                                                class="btn-lg btn btn-link">Recover Password</a> -->
+                                                            <button class="btn btn-primary btn-lg">Login to
+                                                                Dashboard</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="./assets/scripts/main.87c0748b313a1dda75f5.js"></script>
+</body>
+
+</html>
